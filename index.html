@@ -36,6 +36,7 @@
       display: flex;
       justify-content: center;
       align-items: stretch;
+      -webkit-tap-highlight-color: transparent; /* nicer on mobile */
     }
 
     .app-shell {
@@ -251,45 +252,41 @@
     }
 
     .stickers-row {
-  display: flex;
-  flex-wrap: nowrap;        /* force single line */
-  gap: 8px;
-  overflow-x: auto;         /* horizontal scroll */
-  padding-bottom: 6px;      /* prevent shadow cutoff */
-  scrollbar-width: none;    /* hide scrollbar (Firefox) */
-}
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
 
-.stickers-row::-webkit-scrollbar {
-  display: none;            /* hide scrollbar (Chrome/Safari) */
-}
-
+    .stickers-row::-webkit-scrollbar {
+      display: none;
+    }
 
     .sticker {
-  width: 28px;
-  height: 28px;
-  font-size: 1rem;
-  border-radius: 999px;
-  background: #fff1f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: grab;
-  border: 1px solid #fecaca;
-  user-select: none;
+      width: 28px;
+      height: 28px;
+      font-size: 1rem;
+      border-radius: 999px;
+      background: #fff1f2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      border: 1px solid #fecaca;
+      user-select: none;
+      box-shadow: 0 2px 5px rgba(248, 113, 113, 0.15);
+    }
 
-  /* smaller shadow so it doesn't overflow */
-  box-shadow: 0 2px 5px rgba(248, 113, 113, 0.15);
-}
+    .stickers-row {
+      margin-top: 4px;
+      gap: 6px;
+    }
 
-.stickers-row {
-  margin-top: 4px;
-  gap: 6px;
-}
-
-.panel-card {
-  padding-bottom: 18px; /* add extra space under stickers */
-}
-
+    .panel-card {
+      padding-bottom: 18px;
+    }
 
     .sticker:active {
       cursor: grabbing;
@@ -433,14 +430,14 @@
     }
 
     .memory-meta {
-  margin-top: auto;   /* pushes pills to the bottom */
-  display: flex;
-  gap: 8px;
-  font-size: 0.72rem;
-  color: #854d0e;
-  opacity: 0.9;
-  flex-wrap: wrap;
-}
+      margin-top: auto;
+      display: flex;
+      gap: 8px;
+      font-size: 0.72rem;
+      color: #854d0e;
+      opacity: 0.9;
+      flex-wrap: wrap;
+    }
 
     .pill {
       border-radius: 999px;
@@ -491,6 +488,7 @@
       border-radius: 999px;
       border: 1px solid rgba(148, 163, 184, 0.5);
       pointer-events: none;
+      content: "";
     }
 
     .draggable-item {
@@ -553,19 +551,58 @@
       gap: 5px;
     }
 
-    /* Responsive */
+    /* ✅ Responsive – single-column mobile layout (Option A) */
     @media (max-width: 900px) {
       body {
         padding: 12px;
+        align-items: flex-start;
       }
 
       .app-shell {
-        padding: 16px;
+        padding: 14px;
         border-radius: 26px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      .subtitle {
+        font-size: 0.7rem;
+      }
+
+      .friend-tag {
+        font-size: 0.76rem;
       }
 
       .layout {
         grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .right-panel {
+        margin-top: 4px;
+      }
+
+      .canvas-wrapper {
+        min-height: auto;
+      }
+
+      #scrapbookCanvas {
+        height: auto;          /* let content define height */
+        min-height: 260px;
+      }
+
+      .canvas-inner-padding {
+        position: static;      /* easier layout on small screens */
+        inset: auto;
+        padding: 10px;
       }
 
       .canvas-body {
@@ -573,8 +610,50 @@
         height: auto;
       }
 
-      #scrapbookCanvas {
-        min-height: 320px;
+      .memory-card {
+        font-size: 0.76rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+
+      .app-shell {
+        padding: 12px;
+        border-radius: 22px;
+      }
+
+      h1 {
+        font-size: 1.25rem;
+      }
+
+      .panel-card {
+        padding: 12px 12px 10px;
+      }
+
+      .small-row {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .button-row {
+        flex-direction: column;
+      }
+
+      .canvas-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .canvas-date {
+        text-align: left;
       }
     }
   </style>
@@ -655,7 +734,7 @@
           />
 
           <p class="hint">
-            ONCE UPLOADED, YOU CAN DRAG & PLACE THE PHOTO ANYWHERE INSIDE THE SCRAPBOOK CANVAS.
+            ONCE UPLOADED, YOU CAN DRAG &amp; PLACE THE PHOTO ANYWHERE INSIDE THE SCRAPBOOK CANVAS.
           </p>
         </div>
 
@@ -686,56 +765,57 @@
             <div class="sticker" data-emoji="🚀">🚀</div>
             <div class="sticker" data-emoji="💯">💯</div>
           </div>
-            
+        </div>
+
         <!-- SHARE & EXPORT -->
         <div class="panel-card">
-            <div class="panel-title">
-              <span>SHARE & EXPORT</span>
-            </div>
-          
-            <!-- Export + Clear -->
-            <div class="button-row">
-              <button id="exportBtn" type="button">
-                <span>GENERATE SCRAPBOOK PAGE</span>
-              </button>
-          
-              <button id="clearCanvasBtn" type="button" class="secondary">
-                <span>CLEAR</span>
-              </button>
-            </div>
-          
-            <hr style="border:none;border-top:1px dashed #e5e7eb;margin:14px 0 10px;" />
-          
-            <!-- Upload to Google Form -->
-            <label style="font-size:0.78rem; font-weight:600; color:#4b5563; text-transform:uppercase; letter-spacing:0.08em;">
-              UPLOAD YOUR SCRAPBOOK PAGE HERE
-            </label>
-          
-            <div class="button-row" style="margin-top:8px;">
-              <a 
-                href="https://forms.gle/1kjGWy9bw4Az3CNB8" 
-                target="_blank" 
-                style="
-                  text-decoration:none;
-                  display:inline-flex;
-                  align-items:center;
-                  gap:6px;
-                  padding:8px 16px;
-                  border-radius:999px;
-                  font-size:0.8rem;
-                  font-weight:600;
-                  background:#f3f4f6;
-                  color:#111827;
-                  box-shadow:0 6px 10px rgba(15,23,42,0.05);
-                "
-              >
-                <span>UPLOAD</span>
-              </a>
-            </div>
-          
-            <p class="hint" style="margin-top:6px;">
-            </p>
-          </div>          
+          <div class="panel-title">
+            <span>SHARE &amp; EXPORT</span>
+          </div>
+
+          <!-- Export + Clear -->
+          <div class="button-row">
+            <button id="exportBtn" type="button">
+              <span>GENERATE SCRAPBOOK PAGE</span>
+            </button>
+
+            <button id="clearCanvasBtn" type="button" class="secondary">
+              <span>CLEAR</span>
+            </button>
+          </div>
+
+          <hr style="border:none;border-top:1px dashed #e5e7eb;margin:14px 0 10px;" />
+
+          <!-- Upload to Google Form -->
+          <label style="font-size:0.78rem; font-weight:600; color:#4b5563; text-transform:uppercase; letter-spacing:0.08em;">
+            UPLOAD YOUR SCRAPBOOK PAGE HERE
+          </label>
+
+          <div class="button-row" style="margin-top:8px;">
+            <a 
+              href="https://forms.gle/1kjGWy9bw4Az3CNB8" 
+              target="_blank" 
+              style="
+                text-decoration:none;
+                display:inline-flex;
+                align-items:center;
+                gap:6px;
+                padding:8px 16px;
+                border-radius:999px;
+                font-size:0.8rem;
+                font-weight:600;
+                background:#f3f4f6;
+                color:#111827;
+                box-shadow:0 6px 10px rgba(15,23,42,0.05);
+              "
+            >
+              <span>UPLOAD</span>
+            </a>
+          </div>
+
+          <p class="hint" style="margin-top:6px;">
+          </p>
+        </div>          
       </section>
 
       <!-- RIGHT PANEL -->
@@ -747,7 +827,7 @@
               <div class="canvas-header">
                 <div class="canvas-header-left">
                   <div class="canvas-header-title-row">
-                    <h2 id="canvasTitle">SCRAPBOOK PAGE<3</h2>
+                    <h2 id="canvasTitle">SCRAPBOOK PAGE&lt;3</h2>
                   </div>
                   <p id="canvasSubtitle">
                     FILLED BY <span id="canvasFillerName">YOU 💌</span>
@@ -758,28 +838,27 @@
 
               <!-- Canvas body -->
               <div class="canvas-body">
-               <!-- Memory card -->
-<div class="memory-card">
-    <div class="memory-label">FAVOURITE MEMORY</div>
-  
-    <div id="memoryText" class="memory-text">
-    </div>
-  
-    <div class="memory-meta">
-      <div class="pill">
-        <span id="oneWordPreview">ONE WORD FOR ME</span>
-      </div>
-      <div class="pill">
-        <span id="wishPreview">WISH FOR FUTURE ME</span>
-      </div>
-    </div>
-  
-    <div class="memory-signature" id="memorySignature">
-      — <span>Your name here</span>
-    </div>
-  </div>
-  
-
+                <!-- Memory card -->
+                <div class="memory-card">
+                  <div class="memory-label">FAVOURITE MEMORY</div>
+                
+                  <div id="memoryText" class="memory-text">
+                  </div>
+                
+                  <div class="memory-meta">
+                    <div class="pill">
+                      <span id="oneWordPreview">ONE WORD FOR ME</span>
+                    </div>
+                    <div class="pill">
+                      <span id="wishPreview">WISH FOR FUTURE ME</span>
+                    </div>
+                  </div>
+                
+                  <div class="memory-signature" id="memorySignature">
+                    — <span>Your name here</span>
+                  </div>
+                </div>
+                
                 <!-- Photo + stickers area -->
                 <div class="photo-area" id="photoArea">
                   <!-- draggable photo & stickers will appear here -->
@@ -840,49 +919,49 @@
       dateEl.textContent = now.toLocaleDateString(undefined, options);
     }
 
-/* 4. Live text binding for memory + meta + name */
-function setupLiveTextBinding() {
-  const memoryInput = document.getElementById("memoryInput");
-  const oneWordInput = document.getElementById("oneWordInput");
-  const wishInput = document.getElementById("wishInput");
-  const fillerNameInput = document.getElementById("fillerNameInput");
+    /* 4. Live text binding for memory + meta + name */
+    function setupLiveTextBinding() {
+      const memoryInput = document.getElementById("memoryInput");
+      const oneWordInput = document.getElementById("oneWordInput");
+      const wishInput = document.getElementById("wishInput");
+      const fillerNameInput = document.getElementById("fillerNameInput");
 
-  const memoryText = document.getElementById("memoryText");
-  const oneWordPreview = document.getElementById("oneWordPreview");
-  const wishPreview = document.getElementById("wishPreview");
-  const canvasFillerName = document.getElementById("canvasFillerName");
+      const memoryText = document.getElementById("memoryText");
+      const oneWordPreview = document.getElementById("oneWordPreview");
+      const wishPreview = document.getElementById("wishPreview");
+      const canvasFillerName = document.getElementById("canvasFillerName");
 
-  // FIXED SELECTOR — works 100% reliably
-  const memorySignature = document.querySelector("#memorySignature span");
+      // fixed selector
+      const memorySignature = document.querySelector("#memorySignature span");
 
-  memoryInput.addEventListener("input", () => {
-    memoryText.textContent =
-      memoryInput.value.trim() ||
-      "Start typing your favourite memory in the box on the left — it will appear here live ✨";
-  });
+      memoryInput.addEventListener("input", () => {
+        memoryText.textContent =
+          memoryInput.value.trim() ||
+          "Start typing your favourite memory in the box on the left — it will appear here live ✨";
+      });
 
-  oneWordInput.addEventListener("input", () => {
-    oneWordPreview.textContent =
-      oneWordInput.value.trim() || "One word for me";
-  });
+      oneWordInput.addEventListener("input", () => {
+        oneWordPreview.textContent =
+          oneWordInput.value.trim() || "One word for me";
+      });
 
-  wishInput.addEventListener("input", () => {
-    wishPreview.textContent =
-      wishInput.value.trim() || "Your wish for my future";
-  });
+      wishInput.addEventListener("input", () => {
+        wishPreview.textContent =
+          wishInput.value.trim() || "Your wish for my future";
+      });
 
-  fillerNameInput.addEventListener("input", () => {
-    const name = fillerNameInput.value.trim();
+      fillerNameInput.addEventListener("input", () => {
+        const name = fillerNameInput.value.trim();
 
-    if (name) {
-      canvasFillerName.textContent = name;
-      memorySignature.textContent = name;
-    } else {
-      canvasFillerName.textContent = "you 💌";
-      memorySignature.textContent = "Your name here";
+        if (name) {
+          canvasFillerName.textContent = name;
+          memorySignature.textContent = name;
+        } else {
+          canvasFillerName.textContent = "you 💌";
+          memorySignature.textContent = "Your name here";
+        }
+      });
     }
-  });
-}
 
     /* 5. Make element draggable inside container */
     function makeElementDraggable(el, container) {
@@ -1036,40 +1115,9 @@ function setupLiveTextBinding() {
       });
     }
 
-    /* 10. Link generator */
+    /* 10. (Link generator function kept but not used – no UI yet) */
     function setupLinkGenerator() {
-      const linkNameInput = document.getElementById("linkNameInput");
-      const generateLinkBtn = document.getElementById("generateLinkBtn");
-      const linkOutput = document.getElementById("generatedLinkOutput");
-      const copyBtn = document.getElementById("copyLinkBtn");
-      const copyStatus = document.getElementById("copyStatus");
-
-      generateLinkBtn.addEventListener("click", () => {
-        const name = linkNameInput.value.trim();
-        const base = window.location.origin + window.location.pathname;
-
-        const url =
-          name.length > 0
-            ? `${base}?friend=${encodeURIComponent(name)}`
-            : base;
-
-        linkOutput.value = url;
-        copyStatus.textContent = "";
-      });
-
-      copyBtn.addEventListener("click", async () => {
-        if (!linkOutput.value) {
-          copyStatus.textContent = "Generate a link first.";
-          return;
-        }
-
-        try {
-          await navigator.clipboard.writeText(linkOutput.value);
-          copyStatus.textContent = "Copied ✅";
-        } catch (err) {
-          copyStatus.textContent = "Could not copy, please copy manually.";
-        }
-      });
+      // Intentionally not called; avoids errors until inputs exist in HTML
     }
 
     /* 11. Init */
@@ -1081,7 +1129,7 @@ function setupLiveTextBinding() {
       setupPhotoUpload();
       setupClearCanvas();
       setupExportButton();
-      setupLinkGenerator();
+      // setupLinkGenerator(); // not called – no link generator UI yet
     });
   </script>
 </body>
