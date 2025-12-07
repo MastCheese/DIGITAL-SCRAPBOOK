@@ -367,11 +367,6 @@
       gap: 6px;
     }
 
-    .canvas-header-title-row span.arrow {
-      font-size: 0.8rem;
-      color: #9ca3af;
-    }
-
     .canvas-header h2 {
       font-size: 0.9rem;
       text-transform: uppercase;
@@ -496,6 +491,7 @@
       cursor: grab;
       user-select: none;
       touch-action: none;
+      z-index: 2;
     }
 
     .draggable-item:active {
@@ -551,7 +547,9 @@
       gap: 5px;
     }
 
-    /* ✅ Responsive – single-column mobile layout (Option A) */
+    /* ========= RESPONSIVE ENHANCEMENTS ========= */
+
+    /* Tablet / small laptop */
     @media (max-width: 900px) {
       body {
         padding: 12px;
@@ -581,6 +579,7 @@
         font-size: 0.76rem;
       }
 
+      /* Single-column layout */
       .layout {
         grid-template-columns: 1fr;
         gap: 14px;
@@ -592,29 +591,46 @@
 
       .canvas-wrapper {
         min-height: auto;
+        padding: 12px;
+        border-radius: 20px;
       }
 
       #scrapbookCanvas {
-        height: auto;          /* let content define height */
+        height: auto;           /* let content define height */
         min-height: 260px;
       }
 
       .canvas-inner-padding {
-        position: static;      /* easier layout on small screens */
+        position: static;       /* simpler for mobile */
         inset: auto;
         padding: 10px;
       }
 
+      /* Stack memory card + photo vertically with flexible height */
       .canvas-body {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
         height: auto;
+      }
+
+      /* Ensure photo area is always visible */
+      .photo-area {
+        min-height: 240px;      /* your chosen Option B height */
       }
 
       .memory-card {
         font-size: 0.76rem;
+        padding: 8px 10px;
+      }
+
+      .canvas-photo {
+        max-width: 85%;
+        max-height: 85%;
       }
     }
 
+    /* Small phones */
     @media (max-width: 600px) {
       body {
         padding: 10px;
@@ -655,6 +671,15 @@
       .canvas-date {
         text-align: left;
       }
+
+      .canvas-wrapper {
+        padding: 10px;
+        border-radius: 18px;
+      }
+
+      .canvas-inner-padding {
+        padding: 8px;
+      }
     }
   </style>
 </head>
@@ -687,30 +712,19 @@
           </div>
 
           <label for="fillerNameInput">YOUR NAME (WHO'S FILLING THIS?)</label>
-          <input
-            id="fillerNameInput"
-            type="text"
-          />
+          <input id="fillerNameInput" type="text" />
 
           <label for="memoryInput" style="margin-top:8px;">FAVOURITE MEMORY OF OURS?</label>
-          <textarea
-            id="memoryInput"
-          ></textarea>
+          <textarea id="memoryInput"></textarea>
 
           <div class="small-row">
             <div>
               <label for="oneWordInput">ONE WORD FOR ME</label>
-              <input
-                id="oneWordInput"
-                type="text"
-              />
+              <input id="oneWordInput" type="text" />
             </div>
             <div>
               <label for="wishInput">WISH FOR FUTURE ME</label>
-              <input
-                id="wishInput"
-                type="text"
-              />
+              <input id="wishInput" type="text" />
             </div>
           </div>
 
@@ -744,8 +758,7 @@
             <span>STICKERS</span>
           </div>
 
-          <p class="hint">
-          </p>
+          <p class="hint"></p>
           <div id="stickerPalette" class="stickers-row">
             <div class="sticker" data-emoji="❤️">❤️</div>
             <div class="sticker" data-emoji="💛">💛</div>
@@ -813,8 +826,7 @@
             </a>
           </div>
 
-          <p class="hint" style="margin-top:6px;">
-          </p>
+          <p class="hint" style="margin-top:6px;"></p>
         </div>          
       </section>
 
@@ -841,10 +853,7 @@
                 <!-- Memory card -->
                 <div class="memory-card">
                   <div class="memory-label">FAVOURITE MEMORY</div>
-                
-                  <div id="memoryText" class="memory-text">
-                  </div>
-                
+                  <div id="memoryText" class="memory-text"></div>
                   <div class="memory-meta">
                     <div class="pill">
                       <span id="oneWordPreview">ONE WORD FOR ME</span>
@@ -853,7 +862,6 @@
                       <span id="wishPreview">WISH FOR FUTURE ME</span>
                     </div>
                   </div>
-                
                   <div class="memory-signature" id="memorySignature">
                     — <span>Your name here</span>
                   </div>
@@ -865,8 +873,7 @@
                 </div>
               </div>
 
-              <div class="canvas-footer">
-              </div>
+              <div class="canvas-footer"></div>
             </div>
           </div>
         </div>
@@ -874,11 +881,9 @@
         <!-- Toolbar -->
         <div class="toolbar">
           <div class="toolbar-left">
-            <span class="badge-soft">
-            </span>
+            <span class="badge-soft"></span>
           </div>
-          <div class="toolbar-right">
-          </div>
+          <div class="toolbar-right"></div>
         </div>
       </section>
     </main>
@@ -931,7 +936,6 @@
       const wishPreview = document.getElementById("wishPreview");
       const canvasFillerName = document.getElementById("canvasFillerName");
 
-      // fixed selector
       const memorySignature = document.querySelector("#memorySignature span");
 
       memoryInput.addEventListener("input", () => {
@@ -1006,7 +1010,9 @@
 
       function onPointerUp(e) {
         isDragging = false;
-        el.releasePointerCapture(e.pointerId);
+        try {
+          el.releasePointerCapture(e.pointerId);
+        } catch (_) {}
       }
 
       el.addEventListener("pointerdown", onPointerDown);
@@ -1086,6 +1092,7 @@
     function setupExportButton() {
       const exportBtn = document.getElementById("exportBtn");
       const canvasContainer = document.getElementById("scrapbookCanvas");
+      const originalLabel = exportBtn.textContent;
 
       exportBtn.addEventListener("click", () => {
         exportBtn.disabled = true;
@@ -1106,21 +1113,16 @@
           link.click();
 
           exportBtn.disabled = false;
-          exportBtn.textContent = "EXPORT PAGE AS PNG";
+          exportBtn.textContent = originalLabel;
         }).catch(() => {
           exportBtn.disabled = false;
-          exportBtn.textContent = "EXPORT PAGE AS PNG";
+          exportBtn.textContent = originalLabel;
           alert("Oops, something went wrong while exporting. Try again.");
         });
       });
     }
 
-    /* 10. (Link generator function kept but not used – no UI yet) */
-    function setupLinkGenerator() {
-      // Intentionally not called; avoids errors until inputs exist in HTML
-    }
-
-    /* 11. Init */
+    /* 10. Init */
     document.addEventListener("DOMContentLoaded", () => {
       setupFriendTag();
       setCanvasDate();
@@ -1129,7 +1131,6 @@
       setupPhotoUpload();
       setupClearCanvas();
       setupExportButton();
-      // setupLinkGenerator(); // not called – no link generator UI yet
     });
   </script>
 </body>
