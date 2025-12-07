@@ -563,8 +563,8 @@
       }
 
       .app-shell {
-        width: 95vw;
-        max-width: 95vw;      
+        width: 100%;
+        max-width: calc(100% - 24px);     
         margin: 12px auto;
         padding: 24px 14px 14px;
         border-radius: 24px;
@@ -653,10 +653,13 @@
     /* Small phones */
     @media (max-width: 600px) {
       body {
-        padding: 10px;
+        padding: 0 !important;
+        overflow-x: hidden !important;
       }
 
       .app-shell {
+        width: 100% !important;
+        max-width: 100% !important;
         padding: 12px;
         border-radius: 20px !important;
       }
