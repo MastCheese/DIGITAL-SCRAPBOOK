@@ -565,14 +565,18 @@
         flex-direction: column;
         align-items: flex-start;
         gap: 8px;
+        width: 100%;
+        padding: 0 6px 10px 6px !important;
       }
 
       h1 {
-        font-size: 1.4rem;
+        font-size: 1.35rem !important;
       }
 
       .subtitle {
         font-size: 0.7rem;
+        max-width: 90%;
+        line-height: 1.25;
       }
 
       .friend-tag {
@@ -610,18 +614,20 @@
       .canvas-body {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
         height: auto;
       }
 
       /* Ensure photo area is always visible */
       .photo-area {
-        min-height: 240px;      /* your chosen Option B height */
+        min-height: 240px !important; 
+        border-radius: 16px;
       }
 
       .memory-card {
         font-size: 0.76rem;
         padding: 8px 10px;
+        border-radius: 16px;
       }
 
       .canvas-photo {
@@ -638,11 +644,21 @@
 
       .app-shell {
         padding: 12px;
-        border-radius: 22px;
+        border-radius: 20px !important;
+      }
+
+      header {
+        padding: 0 4px 8px 4px !important;
       }
 
       h1 {
-        font-size: 1.25rem;
+        font-size: 1.18rem !important;
+        line-height: 1.2;
+      }
+
+      .subtitle {
+        font-size: 0.65rem !important;
+        max-width: 95%;
       }
 
       .panel-card {
@@ -674,11 +690,14 @@
 
       .canvas-wrapper {
         padding: 10px;
-        border-radius: 18px;
+        border-radius: 16px;
       }
 
       .canvas-inner-padding {
         padding: 8px;
+
+      .photo-area {
+        min-height: 240px !important;  
       }
     }
   </style>
