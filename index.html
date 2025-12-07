@@ -26,6 +26,11 @@
       padding: 0;
     }
 
+    html, body {
+      max-width: 100%;
+      overflow-x: hidden;   /* prevents ANY sideways overflow on iPhone */
+    }
+    
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Segoe UI", sans-serif;
@@ -50,6 +55,9 @@
       padding: 20px 22px 14px;
       backdrop-filter: blur(18px);
       border: 1px solid rgba(248, 250, 252, 0.9);
+      margin: 0 auto;
+      overflow-x: hidden;
+      max-width: calc(100% - 20px);
     }
 
     header {
@@ -559,6 +567,9 @@
       .app-shell {
         padding: 14px 12px !important;
         border-radius: 26px;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto; 
       }
 
       header {
